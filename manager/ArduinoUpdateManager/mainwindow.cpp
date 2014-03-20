@@ -68,7 +68,7 @@ void MainWindow::showError(const QString &msg)
 int MainWindow::parseCurrentFile()
 {
     if (master==NULL)
-        return;
+        return -1;
 
     QDomElement docElem = master->documentElement();
 
@@ -76,5 +76,6 @@ int MainWindow::parseCurrentFile()
         showError("Invalid XML file specified.");
         return -1;
     }
+    return 0;
 
 }

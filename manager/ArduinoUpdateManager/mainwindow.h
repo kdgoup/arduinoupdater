@@ -22,7 +22,7 @@ public slots:
 protected:
 
     void openFile(const QString &);
-    void parseCurrentFile();
+    int parseCurrentFile();
 
     void showError(const QString &msg);
 
