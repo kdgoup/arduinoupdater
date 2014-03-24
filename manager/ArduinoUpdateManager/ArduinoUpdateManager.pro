@@ -13,8 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp\
+        updatelistmodel.cpp\
+        scanner.cpp\
+        manager.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h  updatelistmodel.h scanner.h manager.h
 
 FORMS    += mainwindow.ui
