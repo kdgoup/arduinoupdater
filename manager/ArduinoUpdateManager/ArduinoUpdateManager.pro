@@ -16,8 +16,11 @@ SOURCES += main.cpp\
         mainwindow.cpp\
         updatelistmodel.cpp\
         scanner.cpp\
-        manager.cpp
+        manager.cpp \
+    releasedialog.cpp
 
-HEADERS  += mainwindow.h  updatelistmodel.h scanner.h manager.h
+HEADERS  += mainwindow.h  updatelistmodel.h scanner.h manager.h \
+    releasedialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    releasedialog.ui

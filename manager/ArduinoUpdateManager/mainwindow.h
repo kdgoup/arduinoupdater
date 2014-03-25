@@ -5,6 +5,7 @@
 #include <QtXml/QDomDocument>
 #include "updatelistmodel.h"
 #include "manager.h"
+#include <QModelIndex>
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +23,8 @@ public slots:
     void onOpen();
     void onExit();
     void onNewRelease();
+    void onTreeItemClicked(QModelIndex);
+    void onOSChanged(QString);
 protected:
 
     void openFile(const QString &);

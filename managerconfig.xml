@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ManagerConfig>
+ <OperatingSystems>
+    <OS name="linux-x86">Linux 32-bit</OS>
+    <OS name="linux-amd64">Linux 64-bit</OS>
+    <OS name="windows-x86">Microsoft Windows x86</OS>
+    <OS name="macosx">Apple MacOS X</OS>
+ </OperatingSystems>
+ <DeployLocation>/home/alvieboy/public_html/arduino/</DeployLocation>
+ <Branches/>
+ <Releases>
+ </Releases>
+</ManagerConfig>

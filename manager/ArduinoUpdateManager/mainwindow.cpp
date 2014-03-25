@@ -6,6 +6,7 @@
 #include "QErrorMessage"
 #include <QStandardItemModel>
 #include "scanner.h"
+#include "releasedialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -37,29 +38,35 @@ void MainWindow::onOpen()
     delete(d);
 }
 
+void MainWindow::onOSChanged(QString name)
+{
+    qDebug()<<"OS changed to"<<name;
+
+    // Update release list.
+
+}
+
 void MainWindow::onNewRelease()
 {
+    ReleaseDialog d(this,true);
+    /*
+    foreach (const QString &r, manager.getReleaseList(ui->osComboBox->currentText())) {
+        d.addRelease(r);
+        }
+        */
+    d.exec();
+
     uint newfiles=0, modifiedfiles=0, removedfiles=0;
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Select installation directory"));
+
+    QString dir = d.getDirectory();
+
     if (dir.size()==0)
         return;
-    /*
-    QFileDialog *d = new QFileDialog(this,
-                                     "Open file",
-                                     ".",
-                                     "*.xml");
 
-    d->exec();
-    if (d->result()) {
-        QStringList fileNames;
-        openFile( d->selectedFiles().first() );
-    }
-    delete(d);
-    */
     Scanner scanner;
     ReleaseFileList l;
     scanner.scan(l, dir);
-    qDebug()<<"Found "<<l.size()<<" files";
+//    qDebug()<<"Found "<<l.size()<<" files";
 
     foreach(const ReleaseFile &f, l) {
         if (manager.exists(f)) {
@@ -68,7 +75,8 @@ void MainWindow::onNewRelease()
             newfiles++;
         }
     }
-    qDebug()<<"Of those,"<<newfiles<<" are new.";
+    //    qDebug()<<"Of those,"<<newfiles<<" are new.";
+
 }
 void MainWindow::onExit()
 {
@@ -103,6 +111,16 @@ void MainWindow::showError(const QString &msg)
 
 }
 
+void MainWindow::onTreeItemClicked(QModelIndex index)
+{
+    qDebug()<<"Custom menu"<<index;
+
+    ui->newReleaseButton->setEnabled(true);
+    ui->deleteReleaseButton->setEnabled(true);
+
+}
+
+
 int MainWindow::parseCurrentFile()
 {
     if (master==NULL)
@@ -110,10 +128,28 @@ int MainWindow::parseCurrentFile()
 
     QDomElement docElem = master->documentElement();
 
-    if (docElem.tagName() != "UpdateList") {
+    if (docElem.tagName() != "ManagerConfig") {
         showError("Invalid XML file specified.");
         return -1;
     }
+
+    QDomElement operatingSystems = docElem.firstChildElement("OperatingSystems");
+
+    ui->osComboBox->clear();
+
+    QDomElement os = operatingSystems.firstChildElement("OS");
+    ui->osComboBox->setEnabled(false);
+
+    for (; !os.isNull(); os = os.nextSiblingElement("OS")) {
+        QString osname =  os.attribute("name");
+        ui->osComboBox->addItem(osname);
+
+    }
+    ui->osComboBox->setEnabled(true);
+
+    QDomElement releases = docElem.firstChildElement("Releases");
+    manager.updateReleasesFromXML(releases);
+    
 
     /* Parse the configuration items */
     /*
@@ -138,7 +174,10 @@ int MainWindow::parseCurrentFile()
 
     QStandardItem *rootNode = standardModel->invisibleRootItem();
 
-    QDomNode config = docElem.firstChild();
+    /* Load all releases */
+
+
+
 
     //defining a couple of items
      QStandardItem *americaItem = new QStandardItem("America");
@@ -149,6 +188,7 @@ int MainWindow::parseCurrentFile()
      QStandardItem *italyItem =   new QStandardItem("Italy");
      QStandardItem *romeItem =    new QStandardItem("Rome");
      QStandardItem *veronaItem =  new QStandardItem("Verona");
+
 
      //building up the hierarchy
      rootNode->    appendRow(americaItem);
@@ -163,6 +203,8 @@ int MainWindow::parseCurrentFile()
     view->setModel( standardModel );
 
     ui->centralWidget->show();
+    ui->newReleaseButton->setEnabled(false);
+    ui->deleteReleaseButton->setEnabled(false);
 
 
     return 0;
