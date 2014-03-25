@@ -32,7 +32,6 @@ void MainWindow::onOpen()
 
     d->exec();
     if (d->result()) {
-        QStringList fileNames;
         openFile( d->selectedFiles().first() );
     }
     delete(d);
@@ -92,12 +91,14 @@ void MainWindow::openFile(const QString &name)
     }
     qDebug()<<"Opening "<<name;
     QFile file(name);
+    currentFile=name;
     if (d->setContent(&file)) {
         master=d;
         if (parseCurrentFile()<0)
         {
             delete(master);
             master=NULL;
+            currentFile="";
         }
     }
     file.close();

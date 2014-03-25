@@ -34,6 +34,7 @@ protected:
 private:
     Ui::MainWindow *ui;
     QDomDocument *master;
+    QString currentFile;
     Manager manager;
 };
 
